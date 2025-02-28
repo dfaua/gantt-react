@@ -9,6 +9,7 @@ const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
+  const [hideTimeCols, setHideTimeCols] = React.useState(false);
   let columnWidth = 65;
   if (view === ViewMode.Year) {
     columnWidth = 350;
@@ -74,6 +75,16 @@ const App = () => {
         onViewListChange={setIsChecked}
         isChecked={isChecked}
       />
+      <div style={{ padding: "0 0 1rem 0" }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={hideTimeCols}
+            onChange={e => setHideTimeCols(e.target.checked)}
+          />{" "}
+          Hide Time Columns
+        </label>
+      </div>
       <h3>Gantt With Unlimited Height</h3>
       <Gantt
         tasks={tasks}
@@ -87,6 +98,7 @@ const App = () => {
         onExpanderClick={handleExpanderClick}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        hideTimeColumns={hideTimeCols}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
@@ -102,6 +114,7 @@ const App = () => {
         listCellWidth={isChecked ? "155px" : ""}
         ganttHeight={300}
         columnWidth={columnWidth}
+        hideTimeColumns={hideTimeCols}
       />
     </div>
   );

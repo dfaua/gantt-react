@@ -100,6 +100,10 @@ export interface StylingOption {
    * From 0 to 100
    */
   barFill?: number;
+  /**
+   * Whether to hide the "From" and "To" columns in the task list
+   */
+  hideTimeColumns?: boolean;
   barProgressColor?: string;
   barProgressSelectedColor?: string;
   barBackgroundColor?: string;

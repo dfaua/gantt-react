@@ -31,12 +31,19 @@ let tasks: Task[] = [
     },
     ...
 ];
+
+// Basic usage
 <Gantt tasks={tasks} />
-```
 
-You may handle actions
+// With styling options
+<Gantt
+  tasks={tasks}
+  viewMode={ViewMode.Day}
+  listCellWidth="155px"
+  hideTimeColumns={false} // Set to true to hide "From" and "To" columns
+/>
 
-```javascript
+// With event handlers
 <Gantt
   tasks={tasks}
   viewMode={view}
@@ -94,25 +101,26 @@ npm start
 
 ### StylingOption
 
-| Parameter Name             | Type   | Description                                                                                    |
-| :------------------------- | :----- | :--------------------------------------------------------------------------------------------- |
-| headerHeight               | number | Specifies the header height.                                                                   |
-| ganttHeight                | number | Specifies the gantt chart height without header. Default is 0. It`s mean no height limitation. |
-| columnWidth                | number | Specifies the time period width.                                                               |
-| listCellWidth              | string | Specifies the task list cell width. Empty string is mean "no display".                         |
-| rowHeight                  | number | Specifies the task row height.                                                                 |
-| barCornerRadius            | number | Specifies the taskbar corner rounding.                                                         |
-| barFill                    | number | Specifies the taskbar occupation. Sets in percent from 0 to 100.                               |
-| handleWidth                | number | Specifies width the taskbar drag event control for start and end dates.                        |
-| fontFamily                 | string | Specifies the application font.                                                                |
-| fontSize                   | string | Specifies the application font size.                                                           |
-| barProgressColor           | string | Specifies the taskbar progress fill color globally.                                            |
-| barProgressSelectedColor   | string | Specifies the taskbar progress fill color globally on select.                                  |
-| barBackgroundColor         | string | Specifies the taskbar background fill color globally.                                          |
-| barBackgroundSelectedColor | string | Specifies the taskbar background fill color globally on select.                                |
-| arrowColor                 | string | Specifies the relationship arrow fill color.                                                   |
-| arrowIndent                | number | Specifies the relationship arrow right indent. Sets in px                                      |
-| todayColor                 | string | Specifies the current period column fill color.                                                |
+| Parameter Name             | Type    | Description                                                                                    |
+| :------------------------- | :------ | :--------------------------------------------------------------------------------------------- |
+| headerHeight               | number  | Specifies the header height.                                                                   |
+| ganttHeight                | number  | Specifies the gantt chart height without header. Default is 0. It`s mean no height limitation. |
+| columnWidth                | number  | Specifies the time period width.                                                               |
+| listCellWidth              | string  | Specifies the task list cell width. Empty string is mean "no display".                         |
+| hideTimeColumns            | boolean | Whether to hide the "From" and "To" columns in the task list while keeping the "Name" column.  |
+| rowHeight                  | number  | Specifies the task row height.                                                                 |
+| barCornerRadius            | number  | Specifies the taskbar corner rounding.                                                         |
+| barFill                    | number  | Specifies the taskbar occupation. Sets in percent from 0 to 100.                               |
+| handleWidth                | number  | Specifies width the taskbar drag event control for start and end dates.                        |
+| fontFamily                 | string  | Specifies the application font.                                                                |
+| fontSize                   | string  | Specifies the application font size.                                                           |
+| barProgressColor           | string  | Specifies the taskbar progress fill color globally.                                            |
+| barProgressSelectedColor   | string  | Specifies the taskbar progress fill color globally on select.                                  |
+| barBackgroundColor         | string  | Specifies the taskbar background fill color globally.                                          |
+| barBackgroundSelectedColor | string  | Specifies the taskbar background fill color globally on select.                                |
+| arrowColor                 | string  | Specifies the relationship arrow fill color.                                                   |
+| arrowIndent                | number  | Specifies the relationship arrow right indent. Sets in px                                      |
+| todayColor                 | string  | Specifies the current period column fill color.                                                |
 | TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                                               |
 | TaskListHeader             |        | Specifies the task list Header view                                                            |
 | TaskListTable              |        | Specifies the task list Table view                                                             |

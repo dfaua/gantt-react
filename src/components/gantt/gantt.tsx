@@ -55,6 +55,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
   viewDate,
+  hideTimeColumns = false,
   TooltipContent = StandardTooltipContent,
   TaskListHeader = TaskListHeaderDefault,
   TaskListTable = TaskListTableDefault,
@@ -446,6 +447,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     taskListRef,
     setSelectedTask: handleSelectedTask,
     onExpanderClick: handleExpanderClick,
+    hideTimeColumns,
     TaskListHeader,
     TaskListTable,
   };

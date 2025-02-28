@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import styles from "./task-list-table.module.css";
 import { Task } from "../../types/public-types";
 
-const localeDateStringCache = {};
+const localeDateStringCache: { [key: string]: string } = {};
 const toLocaleDateStringFactory =
   (locale: string) =>
   (date: Date, dateTimeOptions: Intl.DateTimeFormatOptions) => {
@@ -31,6 +31,7 @@ export const TaskListTableDefault: React.FC<{
   selectedTaskId: string;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
+  hideTimeColumns?: boolean;
 }> = ({
   rowHeight,
   rowWidth,
@@ -39,6 +40,7 @@ export const TaskListTableDefault: React.FC<{
   fontSize,
   locale,
   onExpanderClick,
+  hideTimeColumns,
 }) => {
   const toLocaleDateString = useMemo(
     () => toLocaleDateStringFactory(locale),
@@ -89,24 +91,28 @@ export const TaskListTableDefault: React.FC<{
                 <div>{t.name}</div>
               </div>
             </div>
-            <div
-              className={styles.taskListCell}
-              style={{
-                minWidth: rowWidth,
-                maxWidth: rowWidth,
-              }}
-            >
-              &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
-            </div>
-            <div
-              className={styles.taskListCell}
-              style={{
-                minWidth: rowWidth,
-                maxWidth: rowWidth,
-              }}
-            >
-              &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
-            </div>
+            {!hideTimeColumns && (
+              <React.Fragment>
+                <div
+                  className={styles.taskListCell}
+                  style={{
+                    minWidth: rowWidth,
+                    maxWidth: rowWidth,
+                  }}
+                >
+                  &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
+                </div>
+                <div
+                  className={styles.taskListCell}
+                  style={{
+                    minWidth: rowWidth,
+                    maxWidth: rowWidth,
+                  }}
+                >
+                  &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
+                </div>
+              </React.Fragment>
+            )}
           </div>
         );
       })}
