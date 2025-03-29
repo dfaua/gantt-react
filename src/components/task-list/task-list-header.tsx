@@ -14,6 +14,7 @@ export const TaskListHeaderDefault: React.FC<{
       style={{
         fontFamily: fontFamily,
         fontSize: fontSize,
+        width: "100%",
       }}
     >
       <div

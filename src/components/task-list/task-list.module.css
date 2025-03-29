@@ -1,0 +1,5 @@
+.taskListContainer {
+  border-right: 2px solid #888888;
+  position: relative;
+  z-index: 1;
+} 
