@@ -7,3 +7,4 @@ export type {
   DisplayOption,
   EventOption,
 } from "./types/public-types";
+export type { GanttRef } from "./components/gantt/gantt";

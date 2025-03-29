@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 import { getStartEndDateForProject, initTasks } from "./helper";
 import "gantt-task-react/dist/index.css";
+
+// Define locally until the type is available from the package
+interface GanttRef {
+  jumpToNow: () => void;
+}
 
 // Init
 const App = () => {
@@ -11,6 +16,8 @@ const App = () => {
   const [isChecked, setIsChecked] = React.useState(true);
   const [hideTimeCols, setHideTimeCols] = React.useState(false);
   const [useTodayLine, setUseTodayLine] = React.useState(true);
+  const ganttRef = useRef<GanttRef>(null);
+  const limitedGanttRef = useRef<GanttRef>(null);
   let columnWidth = 65;
   if (view === ViewMode.Year) {
     columnWidth = 350;
@@ -19,6 +26,11 @@ const App = () => {
   } else if (view === ViewMode.Week) {
     columnWidth = 250;
   }
+
+  const handleJumpToNow = () => {
+    ganttRef.current?.jumpToNow();
+    limitedGanttRef.current?.jumpToNow();
+  };
 
   const handleTaskChange = (task: Task) => {
     console.log("On date change Id:" + task.id);
@@ -85,7 +97,7 @@ const App = () => {
           />{" "}
           Hide Time Columns
         </label>
-        <label>
+        <label style={{ marginRight: "15px" }}>
           <input
             type="checkbox"
             checked={useTodayLine}
@@ -93,9 +105,23 @@ const App = () => {
           />{" "}
           Show today as line instead of cell
         </label>
+        <button
+          onClick={handleJumpToNow}
+          style={{
+            padding: "5px 10px",
+            background: "#0066FF",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Jump to Now
+        </button>
       </div>
       <h3>Gantt With Unlimited Height</h3>
       <Gantt
+        ref={ganttRef}
         tasks={tasks}
         viewMode={view}
         onDateChange={handleTaskChange}
@@ -113,6 +139,7 @@ const App = () => {
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
+        ref={limitedGanttRef}
         tasks={tasks}
         viewMode={view}
         onDateChange={handleTaskChange}

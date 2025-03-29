@@ -43,6 +43,13 @@ let tasks: Task[] = [
   hideTimeColumns={false} // Set to true to hide "From" and "To" columns
 />
 
+// With today line enabled (instead of cell highlighting)
+<Gantt
+  tasks={tasks}
+  todayLineEnabled={true} 
+  todayLineColor="#0066FF"
+/>
+
 // With event handlers
 <Gantt
   tasks={tasks}
@@ -121,6 +128,8 @@ npm start
 | arrowColor                 | string  | Specifies the relationship arrow fill color.                                                   |
 | arrowIndent                | number  | Specifies the relationship arrow right indent. Sets in px                                      |
 | todayColor                 | string  | Specifies the current period column fill color.                                                |
+| todayLineEnabled           | boolean | Enables displaying the current time as a vertical line instead of coloring the cell.           |
+| todayLineColor             | string  | Specifies the color of the vertical line representing current time when todayLineEnabled=true. |
 | TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                                               |
 | TaskListHeader             |        | Specifies the task list Header view                                                            |
 | TaskListTable              |        | Specifies the task list Table view                                                             |
@@ -155,3 +164,38 @@ npm start
 ## License
 
 [MIT](https://oss.ninja/mit/jaredpalmer/)
+
+## Using refs to control the Gantt chart
+
+You can use refs to access methods that control the Gantt chart programmatically:
+
+```javascript
+import React, { useRef } from 'react';
+import { Gantt, Task, GanttRef } from 'gantt-task-react';
+
+const App = () => {
+  const ganttRef = useRef<GanttRef>(null);
+  
+  const handleJumpToNow = () => {
+    ganttRef.current?.jumpToNow();
+  };
+  
+  return (
+    <div>
+      <button onClick={handleJumpToNow}>Jump to Current Time</button>
+      <Gantt 
+        ref={ganttRef}
+        tasks={tasks} 
+        todayLineEnabled={true}
+        todayLineColor="#0066FF"
+      />
+    </div>
+  );
+};
+```
+
+### GanttRef Methods
+
+| Method Name | Description |
+| :---------- | :---------- |
+| jumpToNow() | Scrolls the chart horizontally to center on the current time/date. |
