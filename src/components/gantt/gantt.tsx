@@ -28,6 +28,8 @@ import styles from "./gantt.module.css";
 
 export interface GanttRef {
   jumpToNow: () => void;
+  collapseAll: () => void;
+  expandAll: () => void;
 }
 
 export const Gantt = forwardRef<GanttRef, GanttProps>(
@@ -401,9 +403,13 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       }
       setSelectedTask(newSelectedTask);
     };
-    const handleExpanderClick = (task: Task) => {
-      if (onExpanderClick && task.hideChildren !== undefined) {
-        onExpanderClick({ ...task, hideChildren: !task.hideChildren });
+    const handleExpanderClick = (task: Task | Task[]) => {
+      if (onExpanderClick) {
+        if (Array.isArray(task)) {
+          onExpanderClick(task);
+        } else if (task.hideChildren !== undefined) {
+          onExpanderClick({ ...task, hideChildren: !task.hideChildren });
+        }
       }
     };
     const gridProps: GridProps = {
@@ -507,9 +513,45 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       }
     };
 
+    // Function to expand all tasks with children
+    const expandAll = () => {
+      if (!onExpanderClick) return;
+
+      // Get all tasks that have hideChildren property
+      const parentTasks = tasks
+        .filter(t => t.hideChildren !== undefined && t.hideChildren === true)
+        .map(task => ({ ...task, hideChildren: false }));
+
+      // If we found tasks to expand, send them as a batch update
+      if (parentTasks.length > 0) {
+        if (typeof onExpanderClick === "function") {
+          onExpanderClick(parentTasks);
+        }
+      }
+    };
+
+    // Function to collapse all tasks with children
+    const collapseAll = () => {
+      if (!onExpanderClick) return;
+
+      // Get all tasks that have hideChildren property
+      const parentTasks = tasks
+        .filter(t => t.hideChildren !== undefined && t.hideChildren === false)
+        .map(task => ({ ...task, hideChildren: true }));
+
+      // If we found tasks to collapse, send them as a batch update
+      if (parentTasks.length > 0) {
+        if (typeof onExpanderClick === "function") {
+          onExpanderClick(parentTasks);
+        }
+      }
+    };
+
     // Expose methods via ref
     useImperativeHandle(ref, () => ({
       jumpToNow,
+      collapseAll,
+      expandAll,
     }));
 
     return (

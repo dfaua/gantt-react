@@ -7,6 +7,8 @@ import "gantt-task-react/dist/index.css";
 // Define locally until the type is available from the package
 interface GanttRef {
   jumpToNow: () => void;
+  collapseAll: () => void;
+  expandAll: () => void;
 }
 
 // Init
@@ -30,6 +32,16 @@ const App = () => {
   const handleJumpToNow = () => {
     ganttRef.current?.jumpToNow();
     limitedGanttRef.current?.jumpToNow();
+  };
+
+  const handleCollapseAll = () => {
+    ganttRef.current?.collapseAll();
+    limitedGanttRef.current?.collapseAll();
+  };
+
+  const handleExpandAll = () => {
+    ganttRef.current?.expandAll();
+    limitedGanttRef.current?.expandAll();
   };
 
   const handleTaskChange = (task: Task) => {
@@ -76,7 +88,27 @@ const App = () => {
     console.log(task.name + " has " + (isSelected ? "selected" : "unselected"));
   };
 
-  const handleExpanderClick = (task: Task) => {
+  const handleExpanderClick = (task: Task | Task[]) => {
+    // If this is an array of tasks, it's a batch update
+    if (Array.isArray(task)) {
+      const newTasks = [...tasks];
+
+      // Update all tasks in the batch
+      task.forEach(t => {
+        const index = newTasks.findIndex(
+          existingTask => existingTask.id === t.id
+        );
+        if (index !== -1) {
+          newTasks[index] = t;
+        }
+      });
+
+      setTasks(newTasks);
+      console.log("Batch update completed");
+      return;
+    }
+
+    // Regular single task update
     setTasks(tasks.map(t => (t.id === task.id ? task : t)));
     console.log("On expander click Id:" + task.id);
   };
@@ -105,19 +137,49 @@ const App = () => {
           />{" "}
           Show today as line instead of cell
         </label>
-        <button
-          onClick={handleJumpToNow}
-          style={{
-            padding: "5px 10px",
-            background: "#0066FF",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Jump to Now
-        </button>
+        <div style={{ marginTop: "10px" }}>
+          <button
+            onClick={handleJumpToNow}
+            style={{
+              padding: "5px 10px",
+              background: "#0066FF",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              marginRight: "8px",
+            }}
+          >
+            Jump to Now
+          </button>
+          <button
+            onClick={handleExpandAll}
+            style={{
+              padding: "5px 10px",
+              background: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              marginRight: "8px",
+            }}
+          >
+            Expand All
+          </button>
+          <button
+            onClick={handleCollapseAll}
+            style={{
+              padding: "5px 10px",
+              background: "#F44336",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Collapse All
+          </button>
+        </div>
       </div>
       <h3>Gantt With Unlimited Height</h3>
       <Gantt

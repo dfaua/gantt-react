@@ -19,20 +19,29 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: 0 0.5rem;
 }
+
 .taskListNameWrapper {
   display: flex;
+  align-items: center;
+  transition: padding-left 0.2s ease;
 }
 
 .taskListExpander {
   color: rgb(86 86 86);
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   padding: 0.15rem 0.2rem 0rem 0.2rem;
   user-select: none;
   cursor: pointer;
+  min-width: 1rem;
+  text-align: center;
 }
+
 .taskListEmptyExpander {
   font-size: 0.6rem;
-  padding-left: 1rem;
+  padding-left: 0.4rem;
   user-select: none;
+  /* min-width: 1rem; */
+  width: 0;
 }

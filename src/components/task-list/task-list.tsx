@@ -16,7 +16,7 @@ export type TaskListProps = {
   horizontalContainerClass?: string;
   selectedTask: BarTask | undefined;
   setSelectedTask: (task: string) => void;
-  onExpanderClick: (task: Task) => void;
+  onExpanderClick: (task: Task | Task[]) => void;
   hideTimeColumns?: boolean;
   TaskListHeader: React.FC<{
     headerHeight: number;
@@ -34,7 +34,7 @@ export type TaskListProps = {
     tasks: Task[];
     selectedTaskId: string;
     setSelectedTask: (taskId: string) => void;
-    onExpanderClick: (task: Task) => void;
+    onExpanderClick: (task: Task | Task[]) => void;
     hideTimeColumns?: boolean;
   }>;
 };

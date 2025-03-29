@@ -71,7 +71,7 @@ export interface EventOption {
   /**
    * Invokes on expander on task list
    */
-  onExpanderClick?: (task: Task) => void;
+  onExpanderClick?: (task: Task | Task[]) => void;
 }
 
 export interface DisplayOption {
@@ -142,7 +142,7 @@ export interface StylingOption {
      * Sets selected task by id
      */
     setSelectedTask: (taskId: string) => void;
-    onExpanderClick: (task: Task) => void;
+    onExpanderClick: (task: Task | Task[]) => void;
   }>;
 }
 

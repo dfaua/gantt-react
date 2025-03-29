@@ -30,7 +30,7 @@ export const TaskListTableDefault: React.FC<{
   tasks: Task[];
   selectedTaskId: string;
   setSelectedTask: (taskId: string) => void;
-  onExpanderClick: (task: Task) => void;
+  onExpanderClick: (task: Task | Task[]) => void;
   hideTimeColumns?: boolean;
 }> = ({
   rowHeight,
@@ -46,6 +46,29 @@ export const TaskListTableDefault: React.FC<{
     () => toLocaleDateStringFactory(locale),
     [locale]
   );
+
+  // Create a map of project IDs to their tasks to calculate indentation
+  const projectsMap = useMemo(() => {
+    const map = new Map<string, Task>();
+    tasks.forEach(task => {
+      map.set(task.id, task);
+    });
+    return map;
+  }, [tasks]);
+
+  // Calculate indentation level for a task
+  const getIndentationLevel = (task: Task): number => {
+    if (!task.project) {
+      return 0;
+    }
+    // Find parent task
+    const parentTask = projectsMap.get(task.project);
+    if (!parentTask) {
+      return 1; // First level of indentation if parent not found
+    }
+    // Recursively get parent's indentation level + 1
+    return getIndentationLevel(parentTask) + 1;
+  };
 
   return (
     <div
@@ -63,6 +86,9 @@ export const TaskListTableDefault: React.FC<{
           expanderSymbol = "▶";
         }
 
+        const indentationLevel = getIndentationLevel(t);
+        const indentationWidth = indentationLevel * 20; // 20px per level
+
         return (
           <div
             className={styles.taskListTableRow}
@@ -77,7 +103,12 @@ export const TaskListTableDefault: React.FC<{
               }}
               title={t.name}
             >
-              <div className={styles.taskListNameWrapper}>
+              <div
+                className={styles.taskListNameWrapper}
+                style={{
+                  paddingLeft: `${indentationWidth}px`,
+                }}
+              >
                 <div
                   className={
                     expanderSymbol
