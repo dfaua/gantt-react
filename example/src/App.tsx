@@ -10,6 +10,7 @@ const App = () => {
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
   const [hideTimeCols, setHideTimeCols] = React.useState(false);
+  const [useTodayLine, setUseTodayLine] = React.useState(true);
   let columnWidth = 65;
   if (view === ViewMode.Year) {
     columnWidth = 350;
@@ -76,13 +77,21 @@ const App = () => {
         isChecked={isChecked}
       />
       <div style={{ padding: "0 0 1rem 0" }}>
-        <label>
+        <label style={{ marginRight: "15px" }}>
           <input
             type="checkbox"
             checked={hideTimeCols}
             onChange={e => setHideTimeCols(e.target.checked)}
           />{" "}
           Hide Time Columns
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={useTodayLine}
+            onChange={e => setUseTodayLine(e.target.checked)}
+          />{" "}
+          Show today as line instead of cell
         </label>
       </div>
       <h3>Gantt With Unlimited Height</h3>
@@ -99,6 +108,8 @@ const App = () => {
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
         hideTimeColumns={hideTimeCols}
+        todayLineEnabled={useTodayLine}
+        todayLineColor="#0066FF"
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
@@ -115,6 +126,8 @@ const App = () => {
         ganttHeight={300}
         columnWidth={columnWidth}
         hideTimeColumns={hideTimeCols}
+        todayLineEnabled={useTodayLine}
+        todayLineColor="#0066FF"
       />
     </div>
   );

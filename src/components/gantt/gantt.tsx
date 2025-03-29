@@ -54,6 +54,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
   fontSize = "14px",
   arrowIndent = 20,
   todayColor = "rgba(252, 248, 227, 0.5)",
+  todayLineEnabled = false,
+  todayLineColor = "#0066FF",
   viewDate,
   hideTimeColumns = false,
   TooltipContent = StandardTooltipContent,
@@ -395,6 +397,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = ({
     rowHeight,
     dates: dateSetup.dates,
     todayColor,
+    todayLineEnabled,
+    todayLineColor,
     rtl,
   };
   const calendarProps: CalendarProps = {

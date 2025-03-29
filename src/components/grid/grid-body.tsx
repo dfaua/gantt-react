@@ -10,6 +10,8 @@ export type GridBodyProps = {
   rowHeight: number;
   columnWidth: number;
   todayColor: string;
+  todayLineEnabled: boolean;
+  todayLineColor: string;
   rtl: boolean;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
@@ -19,6 +21,8 @@ export const GridBody: React.FC<GridBodyProps> = ({
   svgWidth,
   columnWidth,
   todayColor,
+  todayLineEnabled,
+  todayLineColor,
   rtl,
 }) => {
   let y = 0;
@@ -61,6 +65,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   let tickX = 0;
   const ticks: ReactChild[] = [];
   let today: ReactChild = <rect />;
+  let todayLine: ReactChild = <line />;
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
     ticks.push(
@@ -73,7 +78,9 @@ export const GridBody: React.FC<GridBodyProps> = ({
         className={styles.gridTick}
       />
     );
-    if (
+
+    // Calculate position for today's cell or line
+    const isTodayCell =
       (i + 1 !== dates.length &&
         date.getTime() < now.getTime() &&
         dates[i + 1].getTime() >= now.getTime()) ||
@@ -85,34 +92,94 @@ export const GridBody: React.FC<GridBodyProps> = ({
           date,
           date.getTime() - dates[i - 1].getTime(),
           "millisecond"
-        ).getTime() >= now.getTime())
-    ) {
-      today = (
-        <rect
-          x={tickX}
-          y={0}
-          width={columnWidth}
-          height={y}
-          fill={todayColor}
-        />
-      );
-    }
-    // rtl for today
-    if (
+        ).getTime() >= now.getTime());
+
+    // RTL mode for today
+    const isTodayCellRtl =
       rtl &&
       i + 1 !== dates.length &&
       date.getTime() >= now.getTime() &&
-      dates[i + 1].getTime() < now.getTime()
-    ) {
-      today = (
-        <rect
-          x={tickX + columnWidth}
-          y={0}
-          width={columnWidth}
-          height={y}
-          fill={todayColor}
-        />
-      );
+      dates[i + 1].getTime() < now.getTime();
+
+    // Handle today display based on settings
+    if (isTodayCell) {
+      if (todayLineEnabled) {
+        // Calculate exact position for today line based on current time
+        const cellStartTime = date.getTime();
+        const cellEndTime =
+          i + 1 !== dates.length
+            ? dates[i + 1].getTime()
+            : addToDate(
+                date,
+                date.getTime() - dates[i - 1].getTime(),
+                "millisecond"
+              ).getTime();
+        const cellDuration = cellEndTime - cellStartTime;
+        const timeElapsed = now.getTime() - cellStartTime;
+        const relativePosition = timeElapsed / cellDuration;
+
+        // Ensure position is within the cell (0 to 1)
+        const boundedPosition = Math.max(0, Math.min(1, relativePosition));
+        const exactX = tickX + boundedPosition * columnWidth;
+
+        todayLine = (
+          <line
+            x1={exactX}
+            y1={0}
+            x2={exactX}
+            y2={y}
+            stroke={todayLineColor}
+            strokeWidth={2}
+            strokeDasharray="4 4"
+          />
+        );
+      } else {
+        // Use the background color cell method
+        today = (
+          <rect
+            x={tickX}
+            y={0}
+            width={columnWidth}
+            height={y}
+            fill={todayColor}
+          />
+        );
+      }
+    } else if (isTodayCellRtl) {
+      if (todayLineEnabled) {
+        // Calculate exact position for today line in RTL mode
+        const cellStartTime = dates[i + 1].getTime();
+        const cellEndTime = date.getTime();
+        const cellDuration = cellEndTime - cellStartTime;
+        const timeElapsed = cellEndTime - now.getTime();
+        const relativePosition = timeElapsed / cellDuration;
+
+        // Ensure position is within the cell (0 to 1)
+        const boundedPosition = Math.max(0, Math.min(1, relativePosition));
+        const exactX = tickX + columnWidth - boundedPosition * columnWidth;
+
+        todayLine = (
+          <line
+            x1={exactX}
+            y1={0}
+            x2={exactX}
+            y2={y}
+            stroke={todayLineColor}
+            strokeWidth={2}
+            strokeDasharray="4 4"
+          />
+        );
+      } else {
+        today = (
+          <rect
+            x={tickX + columnWidth}
+            y={0}
+            width={columnWidth}
+            height={y}
+            fill={todayColor}
+          />
+        );
+      }
     }
     tickX += columnWidth;
   }
@@ -121,7 +188,8 @@ export const GridBody: React.FC<GridBodyProps> = ({
       <g className="rows">{gridRows}</g>
       <g className="rowLines">{rowLines}</g>
       <g className="ticks">{ticks}</g>
-      <g className="today">{today}</g>
+      {!todayLineEnabled && <g className="today">{today}</g>}
+      {todayLineEnabled && <g className="todayLine">{todayLine}</g>}
     </g>
   );
 };
