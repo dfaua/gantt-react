@@ -20,6 +20,7 @@ export interface Task {
    * From 0 to 100
    */
   progress: number;
+  icon?: React.ReactNode;
   styles?: {
     backgroundColor?: string;
     backgroundSelectedColor?: string;

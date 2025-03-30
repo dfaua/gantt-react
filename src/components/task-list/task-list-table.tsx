@@ -141,6 +141,9 @@ export const TaskListTableDefault: React.FC<{
                 >
                   {expanderSymbol}
                 </div>
+                {t.icon && (
+                  <span className={styles.taskListIcon}>{t.icon}</span>
+                )}
                 <Tippy
                   content={renderEnhancedTooltip(t)}
                   theme="light"

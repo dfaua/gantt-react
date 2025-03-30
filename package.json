@@ -65,6 +65,7 @@
   ],
   "dependencies": {
     "@tippyjs/react": "^4.2.6",
+    "lucide-react": "^0.485.0",
     "tippy.js": "^6.3.7"
   }
 }

@@ -1,4 +1,13 @@
+import React from "react";
 import { Task } from "../../dist/types/public-types";
+import {
+  LayoutDashboard,
+  Code2,
+  Bug,
+  Network,
+  Milestone,
+  PartyPopper,
+} from "lucide-react";
 
 export function initTasks() {
   const currentDate = new Date();
@@ -12,6 +21,7 @@ export function initTasks() {
       type: "project",
       hideChildren: false,
       displayOrder: 1,
+      icon: <LayoutDashboard size={16} />,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -23,6 +33,7 @@ export function initTasks() {
       hideChildren: false,
       project: "MainProject",
       displayOrder: 2,
+      icon: <Code2 size={16} />,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -83,6 +94,7 @@ export function initTasks() {
       hideChildren: false,
       project: "MainProject",
       displayOrder: 7,
+      icon: <Network size={16} />,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -192,6 +204,21 @@ export function initTasks() {
       dependencies: ["Task10"],
       project: "IntegrationProject",
       displayOrder: 17,
+      icon: (
+        <span
+          style={{
+            backgroundColor: "#E53E3E",
+            color: "white",
+            padding: "2px 4px",
+            borderRadius: "3px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Bug size={12} />
+        </span>
+      ),
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 25),
@@ -203,6 +230,7 @@ export function initTasks() {
       project: "MainProject",
       dependencies: ["IntegrationProject"],
       displayOrder: 18,
+      icon: <Milestone size={16} />,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
@@ -213,6 +241,7 @@ export function initTasks() {
       isDisabled: true,
       type: "task",
       displayOrder: 19,
+      icon: <PartyPopper size={16} />,
     },
   ];
   return tasks;
