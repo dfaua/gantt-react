@@ -20,6 +20,7 @@ export type CalendarProps = {
   columnWidth: number;
   fontFamily: string;
   fontSize: string;
+  scrollX?: number;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -31,6 +32,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   columnWidth,
   fontFamily,
   fontSize,
+  scrollX = 0,
 }) => {
   const getCalendarValuesForYear = () => {
     const topValues: ReactChild[] = [];
@@ -380,6 +382,90 @@ export const Calendar: React.FC<CalendarProps> = ({
     case ViewMode.Hour:
       [topValues, bottomValues] = getCalendarValuesForHour();
   }
+
+  // Add this function to get the current visible date information
+  const getCurrentVisibleDate = () => {
+    if (!dateSetup.dates.length) return null;
+
+    // Calculate which date is visible at the current scroll position
+    const visibleColumnIndex = Math.floor(scrollX / columnWidth);
+    const safeIndex = Math.min(
+      Math.max(0, visibleColumnIndex),
+      dateSetup.dates.length - 1
+    );
+
+    const currentDate = dateSetup.dates[safeIndex];
+
+    // Format the date based on the view mode
+    switch (viewMode) {
+      case ViewMode.Year:
+        return { text: currentDate.getFullYear().toString() };
+      case ViewMode.QuarterYear:
+        return {
+          text: `${currentDate.getFullYear()} - Q${Math.floor(
+            (currentDate.getMonth() + 3) / 3
+          )}`,
+        };
+      case ViewMode.Month:
+        return {
+          text: `${getLocaleMonth(
+            currentDate,
+            locale
+          )} ${currentDate.getFullYear()}`,
+        };
+      case ViewMode.Week:
+        return {
+          text: `${getLocaleMonth(
+            currentDate,
+            locale
+          )} ${currentDate.getFullYear()} - W${getWeekNumberISO8601(
+            currentDate
+          )}`,
+        };
+      case ViewMode.Day:
+        return {
+          text: `${getLocaleMonth(
+            currentDate,
+            locale
+          )} ${currentDate.getFullYear()}`,
+        };
+      case ViewMode.QuarterDay:
+      case ViewMode.HalfDay:
+        return {
+          text: `${getLocalDayOfWeek(
+            currentDate,
+            locale,
+            "short"
+          )}, ${currentDate.getDate()} ${getLocaleMonth(
+            currentDate,
+            locale
+          )} ${currentDate.getFullYear()}`,
+        };
+      case ViewMode.Hour:
+        return {
+          text: `${getLocalDayOfWeek(
+            currentDate,
+            locale,
+            "short"
+          )}, ${currentDate.getDate()} ${getLocaleMonth(
+            currentDate,
+            locale
+          )} ${currentDate.getFullYear()}`,
+        };
+      default:
+        return { text: "" };
+    }
+  };
+
+  const currentDateInfo = getCurrentVisibleDate();
+
+  // Limit the scrollX for the fixed date indicator to prevent it from moving beyond the calendar
+  const maxX = Math.max(
+    0,
+    columnWidth * dateSetup.dates.length - Math.min(200, columnWidth * 3)
+  );
+  const limitedScrollX = Math.min(scrollX, maxX);
+
   return (
     <g className="calendar" fontSize={fontSize} fontFamily={fontFamily}>
       <rect
@@ -390,6 +476,26 @@ export const Calendar: React.FC<CalendarProps> = ({
         className={styles.calendarHeader}
       />
       {bottomValues} {topValues}
+      {/* Fixed month/period indicator */}
+      {currentDateInfo && (
+        <g className={styles.fixedDateIndicator}>
+          <rect
+            x={limitedScrollX}
+            y={0}
+            width={Math.min(200, columnWidth * 3)}
+            height={headerHeight * 0.4}
+            className={styles.fixedDateIndicatorBackground}
+          />
+          <text
+            x={limitedScrollX + 10}
+            y={headerHeight * 0.25}
+            className={styles.fixedDateIndicatorText}
+            fontFamily={fontFamily}
+          >
+            {currentDateInfo.text}
+          </text>
+        </g>
+      )}
     </g>
   );
 };

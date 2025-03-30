@@ -49,7 +49,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         height={calendarProps.headerHeight}
         fontFamily={barProps.fontFamily}
       >
-        <Calendar {...calendarProps} />
+        <Calendar {...calendarProps} scrollX={scrollX} />
       </svg>
       <div
         ref={horizontalContainerRef}

@@ -29,3 +29,21 @@
   stroke: #e0e0e0;
   stroke-width: 1.4;
 }
+
+.fixedDateIndicator {
+  pointer-events: none;
+}
+
+.fixedDateIndicatorBackground {
+  fill: rgba(250, 250, 250, 0.9);
+  stroke: #e0e0e0;
+  stroke-width: 1;
+  rx: 4;
+  ry: 4;
+}
+
+.fixedDateIndicatorText {
+  fill: #555;
+  font-weight: bold;
+  dominant-baseline: middle;
+}
