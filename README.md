@@ -115,6 +115,7 @@ npm start
 | columnWidth                | number  | Specifies the time period width.                                                               |
 | listCellWidth              | string  | Specifies the task list cell width. Empty string is mean "no display".                         |
 | hideTimeColumns            | boolean | Whether to hide the "From" and "To" columns in the task list while keeping the "Name" column.  |
+| enhancedTooltips           | boolean | Whether to show enhanced tooltips with more task details (start, end, progress) on hover. Default is `false`. |
 | rowHeight                  | number  | Specifies the task row height.                                                                 |
 | barCornerRadius            | number  | Specifies the taskbar corner rounding.                                                         |
 | barFill                    | number  | Specifies the taskbar occupation. Sets in percent from 0 to 100.                               |
@@ -161,6 +162,52 @@ npm start
 | hideChildren   | bool     | Hide children items. Parameter works with project type only                                           |
 
 \*Required
+
+#### Example: Using the `icon` property
+
+You can use the `icon` property to display icons next to task names. This property accepts any `React.ReactNode`.
+
+```typescript
+import React from 'react';
+import { Task } from 'gantt-task-react';
+import { Bug, Settings } from 'lucide-react'; // Example using lucide-react
+
+const tasks: Task[] = [
+  {
+    id: 'Task 1',
+    name: 'Setup Project',
+    type: 'task',
+    start: new Date(2024, 5, 1),
+    end: new Date(2024, 5, 2),
+    progress: 100,
+    icon: <Settings size={16} /> // Simple icon
+  },
+  {
+    id: 'Task 2',
+    name: 'Fix Critical Bug',
+    type: 'task',
+    start: new Date(2024, 5, 3),
+    end: new Date(2024, 5, 4),
+    progress: 0,
+    // Icon with custom styling (e.g., background color)
+    icon: (
+      <span
+        style={{
+          backgroundColor: '#E53E3E', // Red background
+          color: 'white',
+          padding: '2px 4px',
+          borderRadius: '3px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Bug size={12} />
+      </span>
+    ),
+  },
+];
+```
 
 ## License
 
