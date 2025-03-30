@@ -16,7 +16,8 @@ const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
-  const [hideTimeCols, setHideTimeCols] = React.useState(false);
+  const [hideTimeCols, setHideTimeCols] = React.useState(true);
+  const [enhancedTooltips, setEnhancedTooltips] = React.useState(true);
   const [useTodayLine, setUseTodayLine] = React.useState(true);
   const ganttRef = useRef<GanttRef>(null);
   const limitedGanttRef = useRef<GanttRef>(null);
@@ -137,6 +138,14 @@ const App = () => {
           />{" "}
           Show today as line instead of cell
         </label>
+        <label style={{ marginRight: "15px" }}>
+          <input
+            type="checkbox"
+            checked={enhancedTooltips}
+            onChange={e => setEnhancedTooltips(e.target.checked)}
+          />{" "}
+          Enhanced Tooltips
+        </label>
         <div style={{ marginTop: "10px" }}>
           <button
             onClick={handleJumpToNow}
@@ -198,6 +207,7 @@ const App = () => {
         hideTimeColumns={hideTimeCols}
         todayLineEnabled={useTodayLine}
         todayLineColor="#0066FF"
+        enhancedTooltips={enhancedTooltips}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt

@@ -68,6 +68,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       todayLineColor = "#0066FF",
       viewDate,
       hideTimeColumns = false,
+      enhancedTooltips = false,
       TooltipContent = StandardTooltipContent,
       TaskListHeader = TaskListHeaderDefault,
       TaskListTable = TaskListTableDefault,
@@ -474,6 +475,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       setSelectedTask: handleSelectedTask,
       onExpanderClick: handleExpanderClick,
       hideTimeColumns,
+      enhancedTooltips,
       TaskListHeader,
       TaskListTable,
     };

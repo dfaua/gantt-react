@@ -104,6 +104,10 @@ export interface StylingOption {
    * Whether to hide the "From" and "To" columns in the task list
    */
   hideTimeColumns?: boolean;
+  /**
+   * Whether to show enhanced tooltips with more task details
+   */
+  enhancedTooltips?: boolean;
   barProgressColor?: string;
   barProgressSelectedColor?: string;
   barBackgroundColor?: string;
@@ -143,6 +147,8 @@ export interface StylingOption {
      */
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task | Task[]) => void;
+    hideTimeColumns?: boolean;
+    enhancedTooltips?: boolean;
   }>;
 }
 

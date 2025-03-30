@@ -45,3 +45,10 @@
   /* min-width: 1rem; */
   width: 0;
 }
+
+.taskListName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}

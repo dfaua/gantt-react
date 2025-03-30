@@ -19,6 +19,7 @@ export type TaskListProps = {
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task | Task[]) => void;
   hideTimeColumns?: boolean;
+  enhancedTooltips?: boolean;
   TaskListHeader: React.FC<{
     headerHeight: number;
     rowWidth: string;
@@ -37,6 +38,7 @@ export type TaskListProps = {
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task | Task[]) => void;
     hideTimeColumns?: boolean;
+    enhancedTooltips?: boolean;
   }>;
 };
 
@@ -58,6 +60,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   TaskListHeader,
   TaskListTable,
   hideTimeColumns,
+  enhancedTooltips,
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -85,6 +88,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     setSelectedTask,
     onExpanderClick,
     hideTimeColumns,
+    enhancedTooltips,
   };
 
   return (
