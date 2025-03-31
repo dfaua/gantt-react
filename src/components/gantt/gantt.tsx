@@ -290,19 +290,31 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
           setScrollX(newScrollX);
           event.preventDefault();
         } else if (ganttHeight) {
+          // Calculate the maximum allowed scroll value
+          const maxScrollY = Math.max(0, ganttFullHeight - ganttHeight);
+
+          // Calculate new scroll position
           let newScrollY = scrollY + event.deltaY;
+
+          // Ensure scroll position stays within bounds
           if (newScrollY < 0) {
             newScrollY = 0;
-          } else if (newScrollY > ganttFullHeight - ganttHeight) {
-            newScrollY = ganttFullHeight - ganttHeight;
+          } else if (newScrollY > maxScrollY) {
+            // Fix: Ensure we don't exceed maximum scroll
+            newScrollY = maxScrollY;
           }
+
+          // Only update if actually changed
           if (newScrollY !== scrollY) {
             setScrollY(newScrollY);
             event.preventDefault();
           }
         }
 
-        setIgnoreScrollEvent(true);
+        // We need to manage ignoreScrollEvent state separately
+        if (event.deltaY !== 0 || event.deltaX !== 0) {
+          setIgnoreScrollEvent(true);
+        }
       };
 
       // subscribe if scroll is necessary
@@ -324,7 +336,13 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
 
     const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
       if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
-        setScrollY(event.currentTarget.scrollTop);
+        // Calculate the maximum allowed scroll
+        const maxScrollY = Math.max(0, ganttFullHeight - ganttHeight);
+
+        // Ensure scroll position stays within bounds
+        const newScrollY = Math.min(maxScrollY, event.currentTarget.scrollTop);
+
+        setScrollY(newScrollY);
         setIgnoreScrollEvent(true);
       } else {
         setIgnoreScrollEvent(false);

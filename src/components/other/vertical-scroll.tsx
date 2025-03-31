@@ -20,9 +20,18 @@ export const VerticalScroll: React.FC<{
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scroll;
+      // Calculate the maximum scroll position to prevent unexpected behavior
+      const maxScrollTop = Math.max(0, ganttFullHeight - ganttHeight);
+
+      // Ensure scroll position is within valid range
+      const safeScrollValue = Math.min(Math.max(0, scroll), maxScrollTop);
+
+      // Only update if needed to avoid extra renders
+      if (scrollRef.current.scrollTop !== safeScrollValue) {
+        scrollRef.current.scrollTop = safeScrollValue;
+      }
     }
-  }, [scroll]);
+  }, [scroll, ganttFullHeight, ganttHeight]);
 
   return (
     <div
@@ -35,7 +44,12 @@ export const VerticalScroll: React.FC<{
       onScroll={onScroll}
       ref={scrollRef}
     >
-      <div style={{ height: ganttFullHeight, width: 1 }} />
+      <div
+        style={{
+          height: ganttFullHeight,
+          width: 1,
+        }}
+      />
     </div>
   );
 };
