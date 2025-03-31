@@ -206,7 +206,7 @@ const App = () => {
         columnWidth={columnWidth}
         hideTimeColumns={hideTimeCols}
         todayLineEnabled={useTodayLine}
-        todayLineColor="#0066FF"
+        todayLineColor="#0066FA"
         enhancedTooltips={enhancedTooltips}
       />
       <h3>Gantt With Limited Height</h3>

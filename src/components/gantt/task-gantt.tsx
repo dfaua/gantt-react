@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { GridProps, Grid } from "../grid/grid";
 import { CalendarProps, Calendar } from "../calendar/calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./task-gantt-content";
+import { TodayLineProps, TodayLine } from "../grid/grid-body";
 import styles from "./gantt.module.css";
 
 export type TaskGanttProps = {
@@ -37,6 +38,16 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
     }
   }, [scrollX]);
 
+  // Extract todayLine props from gridProps
+  const todayLineProps: TodayLineProps = {
+    dates: gridProps.dates,
+    rowHeight: gridProps.rowHeight,
+    svgWidth: gridProps.svgWidth,
+    columnWidth: gridProps.columnWidth,
+    todayLineColor: gridProps.todayLineColor,
+    rtl: gridProps.rtl,
+  };
+
   return (
     <div
       className={styles.ganttVerticalContainer}
@@ -69,6 +80,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         >
           <Grid {...gridProps} />
           <TaskGanttContent {...newBarProps} />
+          {gridProps.todayLineEnabled && <TodayLine {...todayLineProps} />}
         </svg>
       </div>
     </div>
