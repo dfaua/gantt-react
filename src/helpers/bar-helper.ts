@@ -254,6 +254,12 @@ const convertToMilestone = (
     ...task.styles,
   };
   
+  // Calculate deadline position if exists (same as in convertToBar)
+  let deadlineX: number | undefined;
+  if (task.deadline) {
+    deadlineX = taskXCoordinate(task.deadline, dates, columnWidth);
+  }
+  
   // Check for violations (same logic as in convertToBar)
   const now = new Date();
   let hasViolation = false;
@@ -285,6 +291,7 @@ const convertToMilestone = (
     hideChildren: undefined,
     barChildren: [],
     styles,
+    deadlineX,
     hasViolation,
   };
 };
