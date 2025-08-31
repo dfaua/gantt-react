@@ -13,6 +13,7 @@ export type GridBodyProps = {
   todayLineEnabled: boolean;
   todayLineColor: string;
   rtl: boolean;
+  ganttHeight?: number;
 };
 
 // Extract TodayLine into a separate component that can be rendered independently
@@ -130,6 +131,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   todayColor,
   todayLineEnabled,
   rtl,
+  ganttHeight,
 }) => {
   let y = 0;
   const gridRows: ReactChild[] = [];
@@ -167,10 +169,39 @@ export const GridBody: React.FC<GridBodyProps> = ({
     y += rowHeight;
   }
 
+  // Add empty rows if ganttHeight is provided
+  if (ganttHeight && y < ganttHeight) {
+    const emptyRowsCount = Math.ceil((ganttHeight - y) / rowHeight);
+    for (let i = 0; i < emptyRowsCount; i++) {
+      gridRows.push(
+        <rect
+          key={"EmptyRow" + i}
+          x="0"
+          y={y}
+          width={svgWidth}
+          height={rowHeight}
+          className={styles.gridRow}
+        />
+      );
+      rowLines.push(
+        <line
+          key={"EmptyRowLine" + i}
+          x="0"
+          y1={y + rowHeight}
+          x2={svgWidth}
+          y2={y + rowHeight}
+          className={styles.gridRowLine}
+        />
+      );
+      y += rowHeight;
+    }
+  }
+
   const now = new Date();
   let tickX = 0;
   const ticks: ReactChild[] = [];
   let today: ReactChild = <rect />;
+  const finalHeight = y; // Store the final height including empty rows
 
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
@@ -180,7 +211,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         x1={tickX}
         y1={0}
         x2={tickX}
-        y2={y}
+        y2={finalHeight}
         className={styles.gridTick}
       />
     );
@@ -214,7 +245,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX}
           y={0}
           width={columnWidth}
-          height={y}
+          height={finalHeight}
           fill={todayColor}
         />
       );
@@ -224,7 +255,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX + columnWidth}
           y={0}
           width={columnWidth}
-          height={y}
+          height={finalHeight}
           fill={todayColor}
         />
       );

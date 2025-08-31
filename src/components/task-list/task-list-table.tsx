@@ -47,6 +47,20 @@ export const TaskListTableDefault: React.FC<{
   hideTimeColumns,
   enhancedTooltips = false,
 }) => {
+  // Get container element to calculate available height
+  const [containerHeight, setContainerHeight] = React.useState(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current?.parentElement) {
+        setContainerHeight(containerRef.current.parentElement.clientHeight);
+      }
+    };
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
   const toLocaleDateString = useMemo(
     () => toLocaleDateStringFactory(locale),
     [locale]
@@ -93,8 +107,14 @@ export const TaskListTableDefault: React.FC<{
     return getIndentationLevel(parentTask) + 1;
   };
 
+  // Calculate number of empty rows needed
+  const visibleRows = Math.floor(containerHeight / rowHeight);
+  const emptyRowsCount = Math.max(0, visibleRows - tasks.length);
+  const emptyRows = Array.from({ length: emptyRowsCount }, (_, i) => i);
+
   return (
     <div
+      ref={containerRef}
       className={styles.taskListWrapper}
       style={{
         fontFamily: fontFamily,
@@ -199,6 +219,49 @@ export const TaskListTableDefault: React.FC<{
           </div>
         );
       })}
+      {/* Render empty rows */}
+      {emptyRows.map(index => (
+        <div
+          className={styles.taskListTableRow}
+          style={{ height: rowHeight }}
+          key={`empty-row-${index}`}
+        >
+          <div
+            className={styles.taskListCell}
+            style={{
+              minWidth: rowWidth,
+              maxWidth: rowWidth,
+            }}
+          >
+            <div className={styles.taskListNameWrapper}>
+              <div className={styles.taskListEmptyExpander}></div>
+              <div className={styles.taskListName}>&nbsp;</div>
+            </div>
+          </div>
+          {!hideTimeColumns && (
+            <React.Fragment>
+              <div
+                className={styles.taskListCell}
+                style={{
+                  minWidth: rowWidth,
+                  maxWidth: rowWidth,
+                }}
+              >
+                &nbsp;
+              </div>
+              <div
+                className={styles.taskListCell}
+                style={{
+                  minWidth: rowWidth,
+                  maxWidth: rowWidth,
+                }}
+              >
+                &nbsp;
+              </div>
+            </React.Fragment>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

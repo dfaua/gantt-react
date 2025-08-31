@@ -48,6 +48,10 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
     rtl: gridProps.rtl,
   };
 
+  // Calculate SVG height to include empty rows
+  const minSvgHeight = barProps.rowHeight * barProps.tasks.length;
+  const svgHeight = ganttHeight ? Math.max(minSvgHeight, ganttHeight) : minSvgHeight;
+
   return (
     <div
       className={styles.ganttVerticalContainer}
@@ -74,7 +78,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width={gridProps.svgWidth}
-          height={barProps.rowHeight * barProps.tasks.length}
+          height={svgHeight}
           fontFamily={barProps.fontFamily}
           ref={ganttSVGRef}
         >

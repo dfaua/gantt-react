@@ -441,6 +441,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       todayLineEnabled,
       todayLineColor,
       rtl,
+      ganttHeight,
     };
     const calendarProps: CalendarProps = {
       dateSetup,
