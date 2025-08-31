@@ -182,6 +182,31 @@ const convertToBar = (
     progressSelectedColor: barProgressSelectedColor,
     ...task.styles,
   };
+  
+  // Calculate deadline position if exists
+  let deadlineX: number | undefined;
+  if (task.deadline) {
+    if (rtl) {
+      deadlineX = taskXCoordinateRTL(task.deadline, dates, columnWidth);
+    } else {
+      deadlineX = taskXCoordinate(task.deadline, dates, columnWidth);
+    }
+  }
+  
+  // Check for violations
+  const now = new Date();
+  let hasViolation = false;
+  
+  // Check deadline violation (only if task is not complete)
+  if (task.deadline && now > task.deadline && task.progress < 100) {
+    hasViolation = true;
+  }
+  
+  // Check strictEndDate violation
+  if (!hasViolation && task.strictEndDate && task.progress < 100 && now > task.end) {
+    hasViolation = true;
+  }
+  
   return {
     ...task,
     typeInternal,
@@ -197,6 +222,8 @@ const convertToBar = (
     height: taskHeight,
     barChildren: [],
     styles,
+    deadlineX,
+    hasViolation,
   };
 };
 
@@ -226,6 +253,21 @@ const convertToMilestone = (
     progressSelectedColor: "",
     ...task.styles,
   };
+  
+  // Check for violations (same logic as in convertToBar)
+  const now = new Date();
+  let hasViolation = false;
+  
+  // Check deadline violation (only if task is not complete)
+  if (task.deadline && now > task.deadline && task.progress < 100) {
+    hasViolation = true;
+  }
+  
+  // Check strictEndDate violation
+  if (!hasViolation && task.strictEndDate && task.progress < 100 && now > task.end) {
+    hasViolation = true;
+  }
+  
   return {
     ...task,
     end: task.start,
@@ -243,11 +285,22 @@ const convertToMilestone = (
     hideChildren: undefined,
     barChildren: [],
     styles,
+    hasViolation,
   };
 };
 
 const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
   const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
+  
+  // Handle edge cases
+  if (index < 0) {
+    // Date is before the first date in the array
+    return 0;
+  }
+  if (index >= dates.length - 1) {
+    // Date is after the last date in the array
+    return dates.length * columnWidth;
+  }
 
   const remainderMillis = xDate.getTime() - dates[index].getTime();
   const percentOfInterval =

@@ -139,9 +139,6 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       let newDates = seedDates(startDate, endDate, viewMode);
       if (rtl) {
         newDates = newDates.reverse();
-        if (scrollX === -1) {
-          setScrollX(newDates.length * columnWidth);
-        }
       }
       setDateSetup({ dates: newDates, viewMode });
       setBarTasks(
@@ -186,9 +183,15 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       milestoneBackgroundColor,
       milestoneBackgroundSelectedColor,
       rtl,
-      scrollX,
       onExpanderClick,
     ]);
+
+    // Handle initial RTL scroll position
+    useEffect(() => {
+      if (rtl && scrollX === -1 && dateSetup.dates.length > 0) {
+        setScrollX(dateSetup.dates.length * columnWidth);
+      }
+    }, [rtl, scrollX, dateSetup.dates.length, columnWidth]);
 
     useEffect(() => {
       if (

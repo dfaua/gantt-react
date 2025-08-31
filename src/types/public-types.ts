@@ -37,6 +37,8 @@ export interface Task {
     text?: string;
     ariaLabel?: string;
   };
+  deadline?: Date;
+  strictEndDate?: boolean;
 }
 
 export interface EventOption {

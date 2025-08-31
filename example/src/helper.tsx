@@ -63,6 +63,7 @@ export function initTasks() {
       type: "task",
       project: "FrontendProject",
       displayOrder: 4,
+      deadline: new Date(currentDate.getFullYear(), currentDate.getMonth(), 5),
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 4),
@@ -74,6 +75,8 @@ export function initTasks() {
       type: "task",
       project: "FrontendProject",
       displayOrder: 5,
+      deadline: new Date(currentDate.getFullYear(), currentDate.getMonth(), 6),
+      strictEndDate: true,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
@@ -85,6 +88,7 @@ export function initTasks() {
       dependencies: ["Task2"],
       project: "FrontendProject",
       displayOrder: 6,
+      deadline: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 20), // Past deadline for demo
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
@@ -122,6 +126,7 @@ export function initTasks() {
         icon: <Trash2 size={16} />,
         ariaLabel: "Delete Database Setup task",
       },
+      deadline: new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 15), // Past deadline for demo
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 5),
@@ -160,6 +165,7 @@ export function initTasks() {
       project: "CoreProject",
       dependencies: ["Task6"],
       displayOrder: 12,
+      strictEndDate: true,
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 12),

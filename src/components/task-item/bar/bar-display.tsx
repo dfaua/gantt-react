@@ -17,6 +17,7 @@ type BarDisplayProps = {
     progressColor: string;
     progressSelectedColor: string;
   };
+  hasViolation?: boolean;
   onMouseDown: (event: React.MouseEvent<SVGPolygonElement, MouseEvent>) => void;
 };
 export const BarDisplay: React.FC<BarDisplayProps> = ({
@@ -29,6 +30,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   progressWidth,
   barCornerRadius,
   styles,
+  hasViolation,
   onMouseDown,
 }) => {
   const getProcessColor = () => {
@@ -60,6 +62,21 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
         rx={barCornerRadius}
         fill={getProcessColor()}
       />
+      {/* Red border for violations */}
+      {hasViolation && (
+        <rect
+          x={x}
+          width={width}
+          y={y}
+          height={height}
+          ry={barCornerRadius}
+          rx={barCornerRadius}
+          fill="none"
+          stroke="#ef4444"
+          strokeWidth={2}
+          pointerEvents="none"
+        />
+      )}
     </g>
   );
 };

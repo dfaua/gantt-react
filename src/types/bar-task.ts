@@ -18,6 +18,8 @@ export interface BarTask extends Task {
     progressColor: string;
     progressSelectedColor: string;
   };
+  deadlineX?: number;
+  hasViolation?: boolean; // true if deadline passed or strictEndDate violation
 }
 
 export type TaskTypeInternal = TaskType | "smalltask";

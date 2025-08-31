@@ -69,6 +69,37 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
         points={projectRightTriangle}
         fill={barColor}
       />
+      {/* Red border for violations */}
+      {task.hasViolation && (
+        <g className="violationBorder">
+          <rect
+            x={task.x1}
+            width={projectWith}
+            y={task.y}
+            height={task.height}
+            rx={task.barCornerRadius}
+            ry={task.barCornerRadius}
+            fill="none"
+            stroke="#ef4444"
+            strokeWidth={2}
+            pointerEvents="none"
+          />
+          <polygon
+            points={projectLeftTriangle}
+            fill="none"
+            stroke="#ef4444"
+            strokeWidth={2}
+            pointerEvents="none"
+          />
+          <polygon
+            points={projectRightTriangle}
+            fill="none"
+            stroke="#ef4444"
+            strokeWidth={2}
+            pointerEvents="none"
+          />
+        </g>
+      )}
     </g>
   );
 };

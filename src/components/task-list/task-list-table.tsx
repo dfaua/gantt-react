@@ -83,8 +83,18 @@ export const TaskListTableDefault: React.FC<{
         </div>
         <div>Start: {toLocaleDateString(task.start, dateTimeOptions)}</div>
         <div>End: {toLocaleDateString(task.end, dateTimeOptions)}</div>
+        {task.deadline && (
+          <div style={{ color: task.deadline < new Date() && task.progress < 100 ? "#ef4444" : undefined }}>
+            Deadline: {toLocaleDateString(task.deadline, dateTimeOptions)}
+          </div>
+        )}
         {task.progress !== undefined && (
           <div>Progress: {Math.round(task.progress)}%</div>
+        )}
+        {task.strictEndDate && (
+          <div style={{ fontSize: "0.9em", fontStyle: "italic" }}>
+            ⚠️ Must complete by end date
+          </div>
         )}
       </div>
     );
@@ -170,16 +180,33 @@ export const TaskListTableDefault: React.FC<{
                 {t.icon && (
                   <span className={styles.taskListIcon}>{t.icon}</span>
                 )}
-                <Tippy
-                  content={renderEnhancedTooltip(t)}
-                  theme="light"
-                  arrow={true}
-                  delay={[200, 0]} // [show, hide] delay in ms
-                  interactive={enhancedTooltips}
-                  allowHTML={enhancedTooltips}
-                >
-                  <div className={styles.taskListName}>{t.name}</div>
-                </Tippy>
+                {/* Check for violations */}
+                {(() => {
+                  const now = new Date();
+                  const hasDeadlineViolation = t.deadline && now > t.deadline && t.progress < 100;
+                  const hasStrictEndDateViolation = t.strictEndDate && t.progress < 100 && now > t.end;
+                  const hasViolation = hasDeadlineViolation || hasStrictEndDateViolation;
+                  
+                  return hasViolation ? (
+                    <span className={styles.taskListViolationDot} title={
+                      hasDeadlineViolation ? "Past deadline" : "Incomplete past end date"
+                    }></span>
+                  ) : null;
+                })()}
+                {enhancedTooltips ? (
+                  <Tippy
+                    content={renderEnhancedTooltip(t)}
+                    theme="light"
+                    arrow={true}
+                    delay={[200, 0]} // [show, hide] delay in ms
+                    interactive={true}
+                    allowHTML={true}
+                  >
+                    <div className={styles.taskListName}>{t.name}</div>
+                  </Tippy>
+                ) : (
+                  <div className={styles.taskListName} title={t.name}>{t.name}</div>
+                )}
               </div>
             </div>
             {!hideTimeColumns && (
@@ -191,16 +218,9 @@ export const TaskListTableDefault: React.FC<{
                     maxWidth: rowWidth,
                   }}
                 >
-                  <Tippy
-                    content={toLocaleDateString(t.start, dateTimeOptions)}
-                    theme="light"
-                    arrow={true}
-                    delay={[200, 0]}
-                  >
-                    <span>
-                      &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
-                    </span>
-                  </Tippy>
+                  <span title={toLocaleDateString(t.start, dateTimeOptions)}>
+                    &nbsp;{toLocaleDateString(t.start, dateTimeOptions)}
+                  </span>
                 </div>
                 <div
                   className={styles.taskListCell}
@@ -209,16 +229,9 @@ export const TaskListTableDefault: React.FC<{
                     maxWidth: rowWidth,
                   }}
                 >
-                  <Tippy
-                    content={toLocaleDateString(t.end, dateTimeOptions)}
-                    theme="light"
-                    arrow={true}
-                    delay={[200, 0]}
-                  >
-                    <span>
-                      &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
-                    </span>
-                  </Tippy>
+                  <span title={toLocaleDateString(t.end, dateTimeOptions)}>
+                    &nbsp;{toLocaleDateString(t.end, dateTimeOptions)}
+                  </span>
                 </div>
               </React.Fragment>
             )}
