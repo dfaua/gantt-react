@@ -32,6 +32,11 @@ export interface Task {
   dependencies?: string[];
   hideChildren?: boolean;
   displayOrder?: number;
+  action?: {
+    icon?: React.ReactNode;
+    text?: string;
+    ariaLabel?: string;
+  };
 }
 
 export interface EventOption {
@@ -73,6 +78,10 @@ export interface EventOption {
    * Invokes on expander on task list
    */
   onExpanderClick?: (task: Task | Task[]) => void;
+  /**
+   * Invokes when action button is clicked on task
+   */
+  onActionClick?: (task: Task) => void;
 }
 
 export interface DisplayOption {
@@ -109,6 +118,18 @@ export interface StylingOption {
    * Whether to show enhanced tooltips with more task details
    */
   enhancedTooltips?: boolean;
+  /**
+   * Whether to hide the action column in the task list
+   */
+  hideActionColumn?: boolean;
+  /**
+   * Title for the action column
+   */
+  actionColumnTitle?: string;
+  /**
+   * Width of the action column
+   */
+  actionColumnWidth?: string;
   barProgressColor?: string;
   barProgressSelectedColor?: string;
   barBackgroundColor?: string;

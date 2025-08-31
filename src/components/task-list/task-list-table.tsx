@@ -36,6 +36,9 @@ export const TaskListTableDefault: React.FC<{
   onExpanderClick: (task: Task | Task[]) => void;
   hideTimeColumns?: boolean;
   enhancedTooltips?: boolean;
+  hideActionColumn?: boolean;
+  actionColumnWidth?: string;
+  onActionClick?: (task: Task) => void;
 }> = ({
   rowHeight,
   rowWidth,
@@ -46,6 +49,9 @@ export const TaskListTableDefault: React.FC<{
   onExpanderClick,
   hideTimeColumns,
   enhancedTooltips = false,
+  hideActionColumn,
+  actionColumnWidth = "100px",
+  onActionClick,
 }) => {
   // Get container element to calculate available height
   const [containerHeight, setContainerHeight] = React.useState(0);
@@ -216,6 +222,33 @@ export const TaskListTableDefault: React.FC<{
                 </div>
               </React.Fragment>
             )}
+            {!hideActionColumn && (
+              <div
+                className={styles.taskListCell}
+                style={{
+                  minWidth: actionColumnWidth,
+                  maxWidth: actionColumnWidth,
+                }}
+              >
+                {t.action && onActionClick && (
+                  <button
+                    className={styles.taskListActionButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onActionClick(t);
+                    }}
+                    aria-label={t.action.ariaLabel || "Action"}
+                  >
+                    {t.action.icon}
+                    {t.action.text && (
+                      <span className={styles.taskListActionText}>
+                        {t.action.text}
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         );
       })}
@@ -259,6 +292,17 @@ export const TaskListTableDefault: React.FC<{
                 &nbsp;
               </div>
             </React.Fragment>
+          )}
+          {!hideActionColumn && (
+            <div
+              className={styles.taskListCell}
+              style={{
+                minWidth: actionColumnWidth,
+                maxWidth: actionColumnWidth,
+              }}
+            >
+              &nbsp;
+            </div>
           )}
         </div>
       ))}

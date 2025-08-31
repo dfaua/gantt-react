@@ -20,12 +20,19 @@ export type TaskListProps = {
   onExpanderClick: (task: Task | Task[]) => void;
   hideTimeColumns?: boolean;
   enhancedTooltips?: boolean;
+  hideActionColumn?: boolean;
+  actionColumnTitle?: string;
+  actionColumnWidth?: string;
+  onActionClick?: (task: Task) => void;
   TaskListHeader: React.FC<{
     headerHeight: number;
     rowWidth: string;
     fontFamily: string;
     fontSize: string;
     hideTimeColumns?: boolean;
+    hideActionColumn?: boolean;
+    actionColumnTitle?: string;
+    actionColumnWidth?: string;
   }>;
   TaskListTable: React.FC<{
     rowHeight: number;
@@ -39,6 +46,9 @@ export type TaskListProps = {
     onExpanderClick: (task: Task | Task[]) => void;
     hideTimeColumns?: boolean;
     enhancedTooltips?: boolean;
+    hideActionColumn?: boolean;
+    actionColumnWidth?: string;
+    onActionClick?: (task: Task) => void;
   }>;
 };
 
@@ -61,6 +71,10 @@ export const TaskList: React.FC<TaskListProps> = ({
   TaskListTable,
   hideTimeColumns,
   enhancedTooltips,
+  hideActionColumn,
+  actionColumnTitle,
+  actionColumnWidth,
+  onActionClick,
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -75,6 +89,9 @@ export const TaskList: React.FC<TaskListProps> = ({
     fontSize,
     rowWidth,
     hideTimeColumns,
+    hideActionColumn,
+    actionColumnTitle,
+    actionColumnWidth,
   };
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   const tableProps = {
@@ -89,6 +106,9 @@ export const TaskList: React.FC<TaskListProps> = ({
     onExpanderClick,
     hideTimeColumns,
     enhancedTooltips,
+    hideActionColumn,
+    actionColumnWidth,
+    onActionClick,
   };
 
   return (

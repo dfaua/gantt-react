@@ -58,3 +58,30 @@
   display: flex;
   align-items: center;
 }
+
+.taskListActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.taskListActionButton:hover {
+  background-color: #e5e7eb;
+}
+
+.taskListActionButton:active {
+  background-color: #d1d5db;
+}
+
+.taskListActionText {
+  margin-left: 0.25rem;
+}

@@ -69,6 +69,9 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       viewDate,
       hideTimeColumns = false,
       enhancedTooltips = false,
+      hideActionColumn = false,
+      actionColumnTitle = "Action",
+      actionColumnWidth = "100px",
       TooltipContent = StandardTooltipContent,
       TaskListHeader = TaskListHeaderDefault,
       TaskListTable = TaskListTableDefault,
@@ -79,6 +82,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       onDelete,
       onSelect,
       onExpanderClick,
+      onActionClick,
     },
     ref
   ) => {
@@ -495,6 +499,10 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       onExpanderClick: handleExpanderClick,
       hideTimeColumns,
       enhancedTooltips,
+      hideActionColumn,
+      actionColumnTitle,
+      actionColumnWidth,
+      onActionClick,
       TaskListHeader,
       TaskListTable,
     };

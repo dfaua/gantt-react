@@ -7,6 +7,8 @@ import {
   Network,
   Milestone,
   PartyPopper,
+  Trash2,
+  Play,
 } from "lucide-react";
 
 export function initTasks() {
@@ -116,6 +118,10 @@ export function initTasks() {
       dependencies: ["Task4"],
       project: "BackendProject",
       displayOrder: 9,
+      action: {
+        icon: <Trash2 size={16} />,
+        ariaLabel: "Delete Database Setup task",
+      },
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 5),
@@ -138,6 +144,11 @@ export function initTasks() {
       type: "task",
       project: "CoreProject",
       displayOrder: 11,
+      action: {
+        icon: <Play size={16} />,
+        text: "Run",
+        ariaLabel: "Run Authentication Service",
+      },
     },
     {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),

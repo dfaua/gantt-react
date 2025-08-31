@@ -7,7 +7,19 @@ export const TaskListHeaderDefault: React.FC<{
   fontFamily: string;
   fontSize: string;
   hideTimeColumns?: boolean;
-}> = ({ headerHeight, fontFamily, fontSize, rowWidth, hideTimeColumns }) => {
+  hideActionColumn?: boolean;
+  actionColumnTitle?: string;
+  actionColumnWidth?: string;
+}> = ({ 
+  headerHeight, 
+  fontFamily, 
+  fontSize, 
+  rowWidth, 
+  hideTimeColumns,
+  hideActionColumn,
+  actionColumnTitle = "Action",
+  actionColumnWidth = "100px"
+}) => {
   return (
     <div
       className={styles.ganttTable}
@@ -62,6 +74,25 @@ export const TaskListHeaderDefault: React.FC<{
               }}
             >
               &nbsp;To
+            </div>
+          </React.Fragment>
+        )}
+        {!hideActionColumn && (
+          <React.Fragment>
+            <div
+              className={styles.ganttTable_HeaderSeparator}
+              style={{
+                height: headerHeight * 0.5,
+                marginTop: headerHeight * 0.25,
+              }}
+            />
+            <div
+              className={styles.ganttTable_HeaderItem}
+              style={{
+                minWidth: actionColumnWidth,
+              }}
+            >
+              &nbsp;{actionColumnTitle}
             </div>
           </React.Fragment>
         )}

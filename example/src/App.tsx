@@ -19,6 +19,7 @@ const App = () => {
   const [hideTimeCols, setHideTimeCols] = React.useState(true);
   const [enhancedTooltips, setEnhancedTooltips] = React.useState(true);
   const [useTodayLine, setUseTodayLine] = React.useState(true);
+  const [hideActionColumn, setHideActionColumn] = React.useState(false);
   const ganttRef = useRef<GanttRef>(null);
   const limitedGanttRef = useRef<GanttRef>(null);
   let columnWidth = 65;
@@ -114,6 +115,12 @@ const App = () => {
     console.log("On expander click Id:" + task.id);
   };
 
+  const handleActionClick = (task: Task) => {
+    const actionType = task.action?.text || "Action";
+    console.log(`${actionType} clicked for task: ${task.name} (ID: ${task.id})`);
+    alert(`${actionType} clicked for task: ${task.name}`);
+  };
+
   return (
     <div className="Wrapper">
       <ViewSwitcher
@@ -145,6 +152,14 @@ const App = () => {
             onChange={e => setEnhancedTooltips(e.target.checked)}
           />{" "}
           Enhanced Tooltips
+        </label>
+        <label style={{ marginRight: "15px" }}>
+          <input
+            type="checkbox"
+            checked={!hideActionColumn}
+            onChange={e => setHideActionColumn(!e.target.checked)}
+          />{" "}
+          Show Action Column
         </label>
         <div style={{ marginTop: "10px" }}>
           <button
@@ -208,6 +223,9 @@ const App = () => {
         todayLineEnabled={useTodayLine}
         todayLineColor="#0066FA"
         enhancedTooltips={enhancedTooltips}
+        hideActionColumn={hideActionColumn}
+        actionColumnTitle="Actions"
+        onActionClick={handleActionClick}
       />
       <h3>Gantt With Limited Height</h3>
       <Gantt
@@ -227,6 +245,10 @@ const App = () => {
         hideTimeColumns={hideTimeCols}
         todayLineEnabled={useTodayLine}
         todayLineColor="#0066FF"
+        enhancedTooltips={enhancedTooltips}
+        hideActionColumn={hideActionColumn}
+        actionColumnTitle="Actions"
+        onActionClick={handleActionClick}
       />
     </div>
   );
