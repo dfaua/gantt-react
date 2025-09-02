@@ -73,7 +73,9 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
       {task.deadlineX !== undefined && (
         <g className="deadlineMarker">
           <polygon
-            points={`${task.deadlineX},${task.y - 4} ${task.deadlineX - 4},${task.y - 8} ${task.deadlineX + 4},${task.y - 8}`}
+            points={`${task.deadlineX},${task.y - 4} ${task.deadlineX - 4},${
+              task.y - 8
+            } ${task.deadlineX + 4},${task.y - 8}`}
             fill="#2563eb"
           />
           <line
@@ -87,36 +89,20 @@ export const Project: React.FC<TaskItemProps> = ({ task, isSelected }) => {
           />
         </g>
       )}
-      {/* Red border for violations */}
+      {/* Red border for violations - simplified rectangular outline */}
       {task.hasViolation && (
-        <g className="violationBorder">
-          <rect
-            x={task.x1}
-            width={projectWith}
-            y={task.y}
-            height={task.height}
-            rx={task.barCornerRadius}
-            ry={task.barCornerRadius}
-            fill="none"
-            stroke="#ef4444"
-            strokeWidth={2}
-            pointerEvents="none"
-          />
-          <polygon
-            points={projectLeftTriangle}
-            fill="none"
-            stroke="#ef4444"
-            strokeWidth={2}
-            pointerEvents="none"
-          />
-          <polygon
-            points={projectRightTriangle}
-            fill="none"
-            stroke="#ef4444"
-            strokeWidth={2}
-            pointerEvents="none"
-          />
-        </g>
+        <rect
+          x={task.x1}
+          width={projectWith}
+          y={task.y}
+          height={task.height}
+          rx={task.barCornerRadius}
+          ry={task.barCornerRadius}
+          fill="none"
+          stroke="#ef4444"
+          strokeWidth={2}
+          pointerEvents="none"
+        />
       )}
     </g>
   );

@@ -35,6 +35,7 @@ export function initTasks() {
       hideChildren: false,
       project: "MainProject",
       displayOrder: 2,
+      deadline: new Date(currentDate.getFullYear(), currentDate.getMonth(), 10),
       icon: <Code2 size={16} />,
     },
     {
