@@ -13,3 +13,7 @@
 .gridTick {
   stroke: #e6e4e4;
 }
+
+.gridWeekend {
+  fill: rgba(0, 0, 0, 0.04);
+}

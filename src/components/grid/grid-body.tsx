@@ -200,11 +200,31 @@ export const GridBody: React.FC<GridBodyProps> = ({
   const now = new Date();
   let tickX = 0;
   const ticks: ReactChild[] = [];
+  const weekendColumns: ReactChild[] = [];
   let today: ReactChild = <rect />;
   const finalHeight = y; // Store the final height including empty rows
 
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
+    
+    // Check if the date is a weekend (Saturday = 6, Sunday = 0)
+    const dayOfWeek = date.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
+    // Add weekend background
+    if (isWeekend) {
+      weekendColumns.push(
+        <rect
+          key={"Weekend" + date.getTime()}
+          x={tickX}
+          y={0}
+          width={columnWidth}
+          height={finalHeight}
+          className={styles.gridWeekend}
+        />
+      );
+    }
+    
     ticks.push(
       <line
         key={date.getTime()}
@@ -266,6 +286,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   return (
     <g className="gridBody">
       <g className="rows">{gridRows}</g>
+      <g className="weekends">{weekendColumns}</g>
       <g className="rowLines">{rowLines}</g>
       <g className="ticks">{ticks}</g>
       {!todayLineEnabled && <g className="today">{today}</g>}

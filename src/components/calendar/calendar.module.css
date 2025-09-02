@@ -47,3 +47,18 @@
   font-weight: bold;
   dominant-baseline: middle;
 }
+
+.calendarWeekendHeader {
+  fill: rgba(0, 0, 0, 0.03);
+}
+
+.calendarBottomTextWeekend {
+  text-anchor: middle;
+  fill: #666;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
