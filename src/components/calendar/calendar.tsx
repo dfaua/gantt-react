@@ -21,6 +21,7 @@ export type CalendarProps = {
   fontFamily: string;
   fontSize: string;
   scrollX?: number;
+  viewportWidth?: number;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -33,7 +34,16 @@ export const Calendar: React.FC<CalendarProps> = ({
   fontFamily,
   fontSize,
   scrollX = 0,
+  viewportWidth = 0,
 }) => {
+  // Calculate visible column range with buffer for smooth scrolling
+  const buffer = 5;
+  const startCol = viewportWidth > 0
+    ? Math.max(0, Math.floor(scrollX / columnWidth) - buffer)
+    : 0;
+  const endCol = viewportWidth > 0
+    ? Math.min(dateSetup.dates.length, Math.ceil((scrollX + viewportWidth) / columnWidth) + buffer)
+    : dateSetup.dates.length;
   const getCalendarValuesForYear = () => {
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
@@ -222,7 +232,9 @@ export const Calendar: React.FC<CalendarProps> = ({
     const weekendBackgrounds: ReactChild[] = [];
     const topDefaultHeight = headerHeight * 0.5;
     const dates = dateSetup.dates;
-    for (let i = 0; i < dates.length; i++) {
+
+    // Use viewport-based rendering (only render visible columns)
+    for (let i = startCol; i < endCol; i++) {
       const date = dates[i];
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
@@ -287,7 +299,9 @@ export const Calendar: React.FC<CalendarProps> = ({
     const ticks = viewMode === ViewMode.HalfDay ? 2 : 4;
     const topDefaultHeight = headerHeight * 0.5;
     const dates = dateSetup.dates;
-    for (let i = 0; i < dates.length; i++) {
+
+    // Use viewport-based rendering (only render visible columns)
+    for (let i = startCol; i < endCol; i++) {
       const date = dates[i];
       const bottomValue = getCachedDateTimeFormat(locale, {
         hour: "numeric",
@@ -332,7 +346,9 @@ export const Calendar: React.FC<CalendarProps> = ({
     const bottomValues: ReactChild[] = [];
     const topDefaultHeight = headerHeight * 0.5;
     const dates = dateSetup.dates;
-    for (let i = 0; i < dates.length; i++) {
+
+    // Use viewport-based rendering for hour view (only render visible columns)
+    for (let i = startCol; i < endCol; i++) {
       const date = dates[i];
       const bottomValue = getCachedDateTimeFormat(locale, {
         hour: "numeric",

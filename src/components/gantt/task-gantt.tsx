@@ -82,7 +82,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           fontFamily={barProps.fontFamily}
           ref={ganttSVGRef}
         >
-          <Grid {...gridProps} />
+          <Grid {...gridProps} scrollX={scrollX} />
           <TaskGanttContent {...newBarProps} />
           {gridProps.todayLineEnabled && <TodayLine {...todayLineProps} />}
         </svg>

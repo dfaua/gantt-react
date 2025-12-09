@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import { BarTask } from "../../types/bar-task";
 import { GanttContentMoveAction } from "../../types/gantt-task-actions";
 import { Bar } from "./bar/bar";
@@ -23,7 +23,7 @@ export type TaskItemProps = {
   ) => any;
 };
 
-export const TaskItem: React.FC<TaskItemProps> = props => {
+const TaskItemComponent: React.FC<TaskItemProps> = props => {
   const {
     task,
     arrowIndent,
@@ -123,3 +123,21 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     </g>
   );
 };
+
+// Memoize TaskItem to prevent unnecessary re-renders
+export const TaskItem = memo(TaskItemComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.task.id === nextProps.task.id &&
+    prevProps.task.x1 === nextProps.task.x1 &&
+    prevProps.task.x2 === nextProps.task.x2 &&
+    prevProps.task.y === nextProps.task.y &&
+    prevProps.task.progress === nextProps.task.progress &&
+    prevProps.task.progressX === nextProps.task.progressX &&
+    prevProps.task.progressWidth === nextProps.task.progressWidth &&
+    prevProps.task.name === nextProps.task.name &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.isProgressChangeable === nextProps.isProgressChangeable &&
+    prevProps.isDateChangeable === nextProps.isDateChangeable &&
+    prevProps.rtl === nextProps.rtl
+  );
+});

@@ -296,9 +296,43 @@ const convertToMilestone = (
   };
 };
 
+// Binary search to find the index of the date - O(log n) instead of O(n)
+const binarySearchDateIndex = (dates: Date[], targetTime: number): number => {
+  let left = 0;
+  let right = dates.length - 1;
+
+  // If target is before first date
+  if (targetTime < dates[0].getTime()) {
+    return -1;
+  }
+
+  // If target is after last date
+  if (targetTime >= dates[right].getTime()) {
+    return right;
+  }
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const midTime = dates[mid].getTime();
+
+    if (midTime <= targetTime) {
+      // Check if this is the right interval
+      if (mid + 1 < dates.length && dates[mid + 1].getTime() > targetTime) {
+        return mid;
+      }
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return left - 1;
+};
+
 const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
-  const index = dates.findIndex(d => d.getTime() >= xDate.getTime()) - 1;
-  
+  const targetTime = xDate.getTime();
+  const index = binarySearchDateIndex(dates, targetTime);
+
   // Handle edge cases
   if (index < 0) {
     // Date is before the first date in the array
@@ -309,7 +343,7 @@ const taskXCoordinate = (xDate: Date, dates: Date[], columnWidth: number) => {
     return dates.length * columnWidth;
   }
 
-  const remainderMillis = xDate.getTime() - dates[index].getTime();
+  const remainderMillis = targetTime - dates[index].getTime();
   const percentOfInterval =
     remainderMillis / (dates[index + 1].getTime() - dates[index].getTime());
   const x = index * columnWidth + percentOfInterval * columnWidth;

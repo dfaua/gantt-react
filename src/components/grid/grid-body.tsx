@@ -14,6 +14,8 @@ export type GridBodyProps = {
   todayLineColor: string;
   rtl: boolean;
   ganttHeight?: number;
+  scrollX?: number;
+  viewportWidth?: number;
 };
 
 // Extract TodayLine into a separate component that can be rendered independently
@@ -132,7 +134,18 @@ export const GridBody: React.FC<GridBodyProps> = ({
   todayLineEnabled,
   rtl,
   ganttHeight,
+  scrollX = 0,
+  viewportWidth = 0,
 }) => {
+  // Calculate visible column range with buffer for smooth scrolling
+  const buffer = 5; // Extra columns on each side
+  const startCol = viewportWidth > 0
+    ? Math.max(0, Math.floor(scrollX / columnWidth) - buffer)
+    : 0;
+  const endCol = viewportWidth > 0
+    ? Math.min(dates.length, Math.ceil((scrollX + viewportWidth) / columnWidth) + buffer)
+    : dates.length;
+
   let y = 0;
   const gridRows: ReactChild[] = [];
   const rowLines: ReactChild[] = [
@@ -198,19 +211,20 @@ export const GridBody: React.FC<GridBodyProps> = ({
   }
 
   const now = new Date();
-  let tickX = 0;
   const ticks: ReactChild[] = [];
   const weekendColumns: ReactChild[] = [];
   let today: ReactChild = <rect />;
   const finalHeight = y; // Store the final height including empty rows
 
-  for (let i = 0; i < dates.length; i++) {
+  // Only render visible columns
+  for (let i = startCol; i < endCol; i++) {
     const date = dates[i];
-    
+    const tickX = i * columnWidth;
+
     // Check if the date is a weekend (Saturday = 6, Sunday = 0)
     const dayOfWeek = date.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    
+
     // Add weekend background
     if (isWeekend) {
       weekendColumns.push(
@@ -224,7 +238,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         />
       );
     }
-    
+
     ticks.push(
       <line
         key={date.getTime()}
@@ -280,7 +294,6 @@ export const GridBody: React.FC<GridBodyProps> = ({
         />
       );
     }
-    tickX += columnWidth;
   }
 
   return (

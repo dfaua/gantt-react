@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { BarTask } from "../../types/bar-task";
 
 type ArrowProps = {
@@ -9,7 +9,8 @@ type ArrowProps = {
   arrowIndent: number;
   rtl: boolean;
 };
-export const Arrow: React.FC<ArrowProps> = ({
+
+const ArrowComponent: React.FC<ArrowProps> = ({
   taskFrom,
   taskTo,
   rowHeight,
@@ -99,8 +100,24 @@ const drownPathAndTriangleRTL = (
   V ${taskToEndPosition} 
   h ${taskToHorizontalOffsetValue}`;
 
-  const trianglePoints = `${taskTo.x2},${taskToEndPosition} 
-  ${taskTo.x2 + 5},${taskToEndPosition + 5} 
+  const trianglePoints = `${taskTo.x2},${taskToEndPosition}
+  ${taskTo.x2 + 5},${taskToEndPosition + 5}
   ${taskTo.x2 + 5},${taskToEndPosition - 5}`;
   return [path, trianglePoints];
 };
+
+// Memoize Arrow to prevent unnecessary re-renders
+export const Arrow = memo(ArrowComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.taskFrom.x1 === nextProps.taskFrom.x1 &&
+    prevProps.taskFrom.x2 === nextProps.taskFrom.x2 &&
+    prevProps.taskFrom.y === nextProps.taskFrom.y &&
+    prevProps.taskTo.x1 === nextProps.taskTo.x1 &&
+    prevProps.taskTo.x2 === nextProps.taskTo.x2 &&
+    prevProps.taskTo.y === nextProps.taskTo.y &&
+    prevProps.rowHeight === nextProps.rowHeight &&
+    prevProps.taskHeight === nextProps.taskHeight &&
+    prevProps.arrowIndent === nextProps.arrowIndent &&
+    prevProps.rtl === nextProps.rtl
+  );
+});

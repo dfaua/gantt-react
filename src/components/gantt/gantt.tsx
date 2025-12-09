@@ -122,6 +122,11 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
     const [scrollX, setScrollX] = useState(-1);
     const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
 
+    // Refs for scroll throttling
+    const scrollXRef = useRef(scrollX);
+    const scrollYRef = useRef(scrollY);
+    const rafIdRef = useRef<number | null>(null);
+
     // task change events
     useEffect(() => {
       let filteredTasks: Task[];
@@ -283,45 +288,59 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       }
     }, [ganttHeight, tasks, headerHeight, rowHeight]);
 
-    // scroll events
+    // Keep refs in sync with state
+    useEffect(() => {
+      scrollXRef.current = scrollX;
+    }, [scrollX]);
+
+    useEffect(() => {
+      scrollYRef.current = scrollY;
+    }, [scrollY]);
+
+    // scroll events with requestAnimationFrame throttling
     useEffect(() => {
       const handleWheel = (event: WheelEvent) => {
-        if (event.shiftKey || event.deltaX) {
-          const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
-          let newScrollX = scrollX + scrollMove;
-          if (newScrollX < 0) {
-            newScrollX = 0;
-          } else if (newScrollX > svgWidth) {
-            newScrollX = svgWidth;
-          }
-          setScrollX(newScrollX);
-          event.preventDefault();
-        } else if (ganttHeight) {
-          // Calculate the maximum allowed scroll value
-          const maxScrollY = Math.max(0, ganttFullHeight - ganttHeight);
+        event.preventDefault();
 
-          // Calculate new scroll position
-          let newScrollY = scrollY + event.deltaY;
-
-          // Ensure scroll position stays within bounds
-          if (newScrollY < 0) {
-            newScrollY = 0;
-          } else if (newScrollY > maxScrollY) {
-            // Fix: Ensure we don't exceed maximum scroll
-            newScrollY = maxScrollY;
-          }
-
-          // Only update if actually changed
-          if (newScrollY !== scrollY) {
-            setScrollY(newScrollY);
-            event.preventDefault();
-          }
+        // Cancel any pending animation frame
+        if (rafIdRef.current !== null) {
+          cancelAnimationFrame(rafIdRef.current);
         }
 
-        // We need to manage ignoreScrollEvent state separately
-        if (event.deltaY !== 0 || event.deltaX !== 0) {
+        // Schedule update on next animation frame
+        rafIdRef.current = requestAnimationFrame(() => {
+          if (event.shiftKey || event.deltaX) {
+            const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
+            let newScrollX = scrollXRef.current + scrollMove;
+            if (newScrollX < 0) {
+              newScrollX = 0;
+            } else if (newScrollX > svgWidth) {
+              newScrollX = svgWidth;
+            }
+            setScrollX(newScrollX);
+          } else if (ganttHeight) {
+            // Calculate the maximum allowed scroll value
+            const maxScrollY = Math.max(0, ganttFullHeight - ganttHeight);
+
+            // Calculate new scroll position
+            let newScrollY = scrollYRef.current + event.deltaY;
+
+            // Ensure scroll position stays within bounds
+            if (newScrollY < 0) {
+              newScrollY = 0;
+            } else if (newScrollY > maxScrollY) {
+              newScrollY = maxScrollY;
+            }
+
+            // Only update if actually changed
+            if (newScrollY !== scrollYRef.current) {
+              setScrollY(newScrollY);
+            }
+          }
+
           setIgnoreScrollEvent(true);
-        }
+          rafIdRef.current = null;
+        });
       };
 
       // subscribe if scroll is necessary
@@ -330,16 +349,11 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       });
       return () => {
         wrapperRef.current?.removeEventListener("wheel", handleWheel);
+        if (rafIdRef.current !== null) {
+          cancelAnimationFrame(rafIdRef.current);
+        }
       };
-    }, [
-      wrapperRef,
-      scrollY,
-      scrollX,
-      ganttHeight,
-      svgWidth,
-      rtl,
-      ganttFullHeight,
-    ]);
+    }, [wrapperRef, ganttHeight, svgWidth, ganttFullHeight]);
 
     const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
       if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
@@ -449,6 +463,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       todayLineColor,
       rtl,
       ganttHeight,
+      viewportWidth: svgContainerWidth,
     };
     const calendarProps: CalendarProps = {
       dateSetup,
@@ -459,6 +474,7 @@ export const Gantt = forwardRef<GanttRef, GanttProps>(
       fontFamily,
       fontSize,
       rtl,
+      viewportWidth: svgContainerWidth,
     };
     const barProps: TaskGanttContentProps = {
       tasks: barTasks,
